@@ -8,3 +8,5 @@ export default function AuthPage() {
     </div>
   );
 }
+
+//auth.js

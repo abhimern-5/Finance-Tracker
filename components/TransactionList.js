@@ -76,3 +76,5 @@ export default function TransactionList() {
     </div>
   );
 }
+
+// transactionlist.js

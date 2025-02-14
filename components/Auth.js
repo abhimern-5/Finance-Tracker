@@ -67,3 +67,5 @@ export default function Auth() {
     </div>
   );
 }
+
+//Auth.js

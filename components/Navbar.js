@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { supabase } from '../lib/supabase';
@@ -17,7 +17,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    setUser(null);  // Reset user state
+    setUser(null); // Reset user state
     router.push('/auth'); // Redirect to auth page
   };
 
@@ -33,18 +33,17 @@ export default function Navbar() {
           </Link>
 
           {user ? (
-            // If logged in, show Logout
             <button onClick={handleLogout} className="bg-red-500 px-4 py-2 rounded">
               Logout
             </button>
           ) : (
-            // If not logged in, show Login/Signup
             <Link href="/auth">
               <span className="bg-green-500 px-4 py-2 rounded cursor-pointer">
                 Login / Signup
               </span>
             </Link>
           )}
+
         </div>
       </div>
     </nav>

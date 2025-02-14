@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import Navbar from '../components/Navbar';
 import Link from 'next/link';
+import ExportButton from '../components/ExportButton';  // Import the ExportButton component
+
 
 export default function Home() {
   const [transactions, setTransactions] = useState([]);
@@ -40,13 +42,20 @@ export default function Home() {
       {/* Main Content */}
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-6">Transactions</h1>
-
+        
+        
         {/* Add Transaction Button */}
         <Link href="/add-transaction">
           <button className="bg-blue-500 text-white px-4 py-2 rounded mb-6">
             Add Transaction
           </button>
         </Link>
+
+        {/* Export to CSV Button */}
+        <div className="mb-6">
+          <ExportButton />   {/* ExportButton Component */}
+        </div>
+
 
         {/* Transaction List */}
         <div className="space-y-4">
@@ -79,3 +88,5 @@ export default function Home() {
     </div>
   );
 }
+
+// index.js
