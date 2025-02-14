@@ -10,26 +10,28 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export default function Dashboard() {
   const [transactions, setTransactions] = useState([]);
 
-  // Fetch transactions from Supabase when the component mounts
+  // Fetch transactions from Supabase
   useEffect(() => {
     fetchTransactions();
   }, []);
 
-  // Function to fetch transactions from the database
   const fetchTransactions = async () => {
-    const { data: user } = await supabase.auth.getUser();
-
-    if (user && user.id) {
+    const { data: user, error: userError } = await supabase.auth.getUser();
+    
+    // Null check for user and user.user
+    if (user && user.user) {
       const { data, error } = await supabase
         .from('transactions')
         .select('*')
-        .eq('user_id', user.id);
-
+        .eq('user_id', user.user.id);
+      
       if (error) {
         console.error('Error fetching transactions:', error);
-      } else if (data) {
-        setTransactions(data);
       }
+
+      if (data) setTransactions(data);
+    } else {
+      console.log('User not logged in or user data not available');
     }
   };
 
@@ -84,32 +86,9 @@ export default function Dashboard() {
             <Pie data={chartData} />
           </div>
         </div>
-
-        {/* Recent Transactions */}
-        <div className="mt-8">
-          <h2 className="text-lg font-semibold mb-4">Recent Transactions</h2>
-          <div className="space-y-4">
-            {transactions.slice(0, 5).map((transaction) => (
-              <div
-                key={transaction.id}
-                className="p-4 border rounded-lg shadow-sm flex justify-between items-center"
-              >
-                <div>
-                  <p className="text-lg font-semibold">
-                    {transaction.type === 'income' ? '+' : '-'}₹
-                    {transaction.amount.toFixed(2)}
-                  </p>
-                  <p className="text-gray-600">{transaction.category}</p>
-                  <p className="text-gray-800">{transaction.description}</p>
-                </div>
-                <p className="text-sm text-gray-500">
-                  {new Date(transaction.date).toLocaleDateString()}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );
 }
+
+// dashboard.js           
