@@ -1,45 +1,43 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 
-export default function SetBudget({ fetchBudget }) {  // Added prop to refetch budget
-
+export default function SetBudget() {
   const [amount, setAmount] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     try {
-      // Get current session
-      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-      
-      // Check if session is available and user is logged in
-      if (sessionError) {
-        console.error('Session Error:', sessionError);
-        alert('Failed to get session. Please try again.');
-        return;
-      }
-      
-      const userId = sessionData?.session?.user?.id;
-      if (!userId) {
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+
+      // Check if user is logged in
+      if (!userData || !userData.user) {
         alert('User is not logged in.');
         return;
       }
 
-      // Insert or update budget in the database
+      // Safely parse amount
+      const budgetAmount = Number(amount);
+      if (isNaN(budgetAmount) || budgetAmount <= 0) {
+        alert('Please enter a valid budget amount.');
+        return;
+      }
+
+      // Insert or update budget
       const { error } = await supabase
-        .from('Budget')
-        .upsert([{ user_id: userId, amount: parseFloat(amount) }]);
+        .from('budget') // Ensure table name is exactly 'budget' in Supabase
+        .upsert([{ user_id: userData.user.id, amount: budgetAmount }]);
 
       if (error) {
-        alert(error.message);
+        console.error('Error setting budget:', error.message);
+        alert('Error setting budget. Please try again.');
       } else {
         alert('Budget set successfully!');
-        setAmount('');  // Clear input field
-        fetchBudget();  // Refetch budget to update state
+        setAmount(''); // Clear input after setting budget
       }
     } catch (error) {
       console.error('Unexpected Error:', error);
-      alert('An unexpected error occurred. Please try again.');
+      alert('An unexpected error occurred.');
     }
   };
 
