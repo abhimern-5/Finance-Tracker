@@ -3,7 +3,8 @@ import { supabase } from '../lib/supabase';
 import Navbar from '../components/Navbar';
 import Link from 'next/link';
 import ExportButton from '../components/ExportButton';  // Import the ExportButton component
-
+import Budget from '../components/Budget';
+import SetBudget from '../components/SetBudget';
 
 export default function Home() {
   const [transactions, setTransactions] = useState([]);
@@ -42,7 +43,12 @@ export default function Home() {
       {/* Main Content */}
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-6">Transactions</h1>
-        
+
+        {/* Display Budget */}
+        <Budget /> 
+
+        {/* Set Budget */}
+        <SetBudget />
         
         {/* Add Transaction Button */}
         <Link href="/add-transaction">

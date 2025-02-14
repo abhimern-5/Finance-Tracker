@@ -29,7 +29,7 @@ export default function Navbar() {
         </Link>
         <div className="flex items-center space-x-4">
           <Link href="/dashboard">
-            <span className="cursor-pointer">Dashboard</span>
+            <span className="bg-green-500 px-4 py-2 rounded cursor-pointer">Dashboard</span>
           </Link>
 
           {user ? (
