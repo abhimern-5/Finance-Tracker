@@ -1,35 +1,45 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 
-export default function SetBudget() {
+export default function SetBudget({ fetchBudget }) {  // Added prop to refetch budget
+
   const [amount, setAmount] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
-      const { data: user, error: userError } = await supabase.auth.getUser();
+      // Get current session
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
       
-      // Check if user is logged in
-      if (!user || !user.user) {
+      // Check if session is available and user is logged in
+      if (sessionError) {
+        console.error('Session Error:', sessionError);
+        alert('Failed to get session. Please try again.');
+        return;
+      }
+      
+      const userId = sessionData?.session?.user?.id;
+      if (!userId) {
         alert('User is not logged in.');
         return;
       }
 
-      // Insert or update budget
+      // Insert or update budget in the database
       const { error } = await supabase
-        .from('budget')
-        .upsert([{ user_id: user.user.id, amount: parseFloat(amount) }]);
+        .from('Budget')
+        .upsert([{ user_id: userId, amount: parseFloat(amount) }]);
 
       if (error) {
         alert(error.message);
       } else {
         alert('Budget set successfully!');
-        window.location.reload();
+        setAmount('');  // Clear input field
+        fetchBudget();  // Refetch budget to update state
       }
     } catch (error) {
       console.error('Unexpected Error:', error);
-      alert('An unexpected error occurred.');
+      alert('An unexpected error occurred. Please try again.');
     }
   };
 

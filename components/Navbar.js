@@ -39,7 +39,7 @@ export default function Navbar() {
           ) : (
             <Link href="/auth">
               <span className="bg-green-500 px-4 py-2 rounded cursor-pointer">
-                Login / Signup
+                Login/Signup
               </span>
             </Link>
           )}
