@@ -8,32 +8,31 @@ export default function SetBudget() {
     e.preventDefault();
     
     try {
+      // Get the current logged-in user
       const { data: userData, error: userError } = await supabase.auth.getUser();
-
+      
       // Check if user is logged in
+      if (userError) {
+        console.error('Error fetching user:', userError.message);
+        alert('Error fetching user information.');
+        return;
+      }
       if (!userData || !userData.user) {
         alert('User is not logged in.');
         return;
       }
 
-      // Safely parse amount
-      const budgetAmount = Number(amount);
-      if (isNaN(budgetAmount) || budgetAmount <= 0) {
-        alert('Please enter a valid budget amount.');
-        return;
-      }
-
       // Insert or update budget
-      const { error } = await supabase
-        .from('budget') // Ensure table name is exactly 'budget' in Supabase
-        .upsert([{ user_id: userData.user.id, amount: budgetAmount }]);
+      const { error: budgetError } = await supabase
+        .from('budget') // Ensure table name is exactly 'budget'
+        .upsert([{ user_id: userData.user.id, amount: parseFloat(amount) }]);
 
-      if (error) {
-        console.error('Error setting budget:', error.message);
-        alert('Error setting budget. Please try again.');
+      if (budgetError) {
+        console.error('Error setting budget:', budgetError.message);
+        alert('Error setting budget.');
       } else {
         alert('Budget set successfully!');
-        setAmount(''); // Clear input after setting budget
+        setAmount(''); // Clear input field after successful set
       }
     } catch (error) {
       console.error('Unexpected Error:', error);

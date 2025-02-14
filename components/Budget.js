@@ -5,30 +5,16 @@ export default function Budget() {
   const [budget, setBudget] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
 
-  // Calculate remaining budget before using it in useEffect
+  // Calculate remaining budget
   const remainingBudget = budget - totalExpenses;
 
-  // Fetch user's budget
+  // Fetch budget and expenses on component load
   useEffect(() => {
     fetchBudget();
-  }, []);
-
-  // Fetch user's total expenses
-  useEffect(() => {
     fetchExpenses();
   }, []);
 
-  // Effect to check remaining budget and trigger alerts
-  useEffect(() => {
-    
-      if (remainingBudget < 0) {
-        alert('Your budget has been exceeded!');
-      } else if (remainingBudget <= budget * 0.2) {
-        alert('You have used 80% of your budget.');
-      }
-    
-  }, [remainingBudget, budget]);
-
+  // Fetch user's budget
   const fetchBudget = async () => {
     try {
       const { data: userData, error: userError } = await supabase.auth.getUser();
@@ -40,7 +26,7 @@ export default function Budget() {
       // Check if user is logged in before proceeding
       if (userData?.user) {
         const { data, error: budgetError } = await supabase
-          .from('budget') // Ensure it's exactly 'budget'
+          .from('budget') // Ensure this matches your table name
           .select('amount')
           .eq('user_id', userData.user.id)
           .single();
@@ -48,7 +34,7 @@ export default function Budget() {
         if (budgetError) {
           console.error('Error fetching budget:', budgetError.message);
         } else if (data) {
-          setBudget(data.amount);
+          setBudget(Number(data.amount)); // Convert amount to number
         } else {
           setBudget(0); // Set to 0 if no budget is found
         }
@@ -60,11 +46,12 @@ export default function Budget() {
     }
   };
 
+  // Fetch user's total expenses
   const fetchExpenses = async () => {
     try {
-      const { data: userData, error } = await supabase.auth.getUser();
-      if (error) {
-        console.error('Error fetching user:', error.message);
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (userError) {
+        console.error('Error fetching user:', userError.message);
         return;
       }
 
