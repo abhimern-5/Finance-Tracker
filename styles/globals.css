@@ -3,19 +3,38 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f3f4f6; /* Light grey background */
+  --foreground: #111827; /* Dark grey foreground */
+  --primary: #140977; /* Vibrant blue primary color */
+  --secondary: #065f46; /* Deep green secondary color */
+  --accent: #f5f3f0; /* Accent color for highlights */
+  --navbar: #0f172a; /* Dark blue-grey navbar background */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #1f2937; /* Dark grey background for dark mode */
+    --foreground: #f3f4f6; /* Light grey foreground for dark mode */
   }
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Poppins', Arial, Helvetica, sans-serif; /* Use Poppins for body text */
+  animation: fadeIn 1s ease-in-out; /* Fade-in animation */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif; /* Use Poppins for headings */
+  color: var(--primary); /* Primary color for headings */
+}
+
+a {
+  color: var(--accent); /* Accent color for links */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }

@@ -22,7 +22,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-blue-600 p-4 text-white">
+    <nav className="bg-gray-900 p-4 text-white">
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/">
           <span className="text-xl font-bold cursor-pointer">Finance Tracker</span>
